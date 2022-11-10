@@ -28,20 +28,39 @@ app.get("/", (req, res) => {
   res.render("pages/form");
 });
 
+
 app.post("/upload", (req, res) => {
-  console.log(req.body["image-name"]);
-  console.log(req.files["image-file"].name);
-  console.log(req.files["image-file"]);
+
+  
+  // console.log(req.body["image-name"]);
+  // console.log(req.files["image-file"].name);
+  // console.log(req.files["image-file"]);
+  
+  /**
+   * 画像アップロード
+   * @param {*} err 
+   * @returns 
+   */
+  const imageUpload = function (err) {
+    if (err) return res.status(500).send(err);
+  
+    console.log("File upload!!");
+  }
 
   const file = req.files["image-file"];
   const name = req.body["image-name"]
-  const path = __dirname + "/" + new Date().getTime() + req.files["image-file"].name;
+  
+  if (file.length) {
+    for (const i of file) {
+      const path = __dirname + "/" + new Date().getTime() + i.name;
+      console.log(path);
+      i.mv(path, imageUpload)
+    }
+  } else {
+    const path = __dirname + "/" + new Date().getTime() + req.files["image-file"].name;
+    file.mv(path, imageUpload);
+  }
 
-  file.mv(path, function (err) {
-    if (err) return res.status(500).send(err);
-
-    console.log("File upload!!");
-  });
 
   res.redirect("/");
 });
