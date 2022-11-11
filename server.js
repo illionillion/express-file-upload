@@ -22,6 +22,7 @@ app.use(
     extended: true,
   })
 );
+// fileUploadの設定
 app.use(fileUpload());
 
 app.get("/", (req, res) => {
@@ -29,38 +30,47 @@ app.get("/", (req, res) => {
 });
 
 
-app.post("/upload", (req, res) => {
+app.post("/upload", async (req, res) => {
+  try {
+    /**
+     * 画像アップロード
+     * @param {*} err
+     * @returns
+     */
+    const imageUpload = function (err) {
+      if (err) return res.status(500).send(err);
 
-  
-  // console.log(req.body["image-name"]);
-  // console.log(req.files["image-file"].name);
-  // console.log(req.files["image-file"]);
-  
-  /**
-   * 画像アップロード
-   * @param {*} err 
-   * @returns 
-   */
-  const imageUpload = function (err) {
-    if (err) return res.status(500).send(err);
-  
-    console.log("File upload!!");
-  }
+      console.log("File upload!!");
+    };
 
-  const file = req.files["image-file"];
-  const name = req.body["image-name"]
-  
-  if (file.length) {
-    for (const i of file) {
-      const path = __dirname + "/" + new Date().getTime() + i.name;
-      console.log(path);
-      i.mv(path, imageUpload)
+    const file = req.files["image-file"];
+    const name = req.body["image-name"];
+
+    let savePath = [];
+
+    if (file.length) {
+      for await (const i of file) {
+        const path = __dirname + "/" + new Date().getTime() + i.name;
+        savePath.push(path); // 配列にpush
+        i.mv(path, imageUpload);
+      }
+    } else {
+      const path = __dirname + "/" + new Date().getTime() + file.name;
+      savePath.push(path); // 配列にpush
+      file.mv(path, imageUpload);
     }
-  } else {
-    const path = __dirname + "/" + new Date().getTime() + req.files["image-file"].name;
-    file.mv(path, imageUpload);
+
+    console.log(savePath); // これをJSON.stringfyで保存
+  } catch (error) {
+    // console.log(error);
+  } finally {
+    res.redirect("/");
   }
+});
 
-
-  res.redirect("/");
+// 404の時
+app.use((req, res, next) => {
+  // res.status(404).send("<h1>ページが見つかりません</h1>");
+  console.log('not found');
+  res.status(404).redirect('/')
 });
