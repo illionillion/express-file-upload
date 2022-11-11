@@ -26,7 +26,7 @@ app.use(
 app.use(fileUpload());
 
 app.get("/", (req, res) => {
-  res.render("pages/form");
+  res.status(200).render("pages/form");
 });
 
 
@@ -61,8 +61,10 @@ app.post("/upload", async (req, res) => {
     }
 
     console.log(savePath); // これをJSON.stringfyで保存
+    res.status(200)
   } catch (error) {
     // console.log(error);
+    res.status(500)
   } finally {
     res.redirect("/");
   }
