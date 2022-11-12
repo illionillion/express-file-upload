@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 // 404の時
 app.use((req, res, next) => {
-  console.log(req.url + "is not found");
+  console.log(req.url + " is not found");
   res.status(404).redirect("/");
 });
 

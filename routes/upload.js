@@ -41,11 +41,8 @@ uploadRouter.post("/", async (req, res) => {
     }
 
     console.log(savePath); // これをJSON.stringfyで保存
-    // return res.redirect("/").status(200);
     return res.status(200).redirect("/");
   } catch (error) {
-    // console.log(error);
-    // return res.redirect("/").status(500);
     return res.status(500).redirect("/");
   }
 });
