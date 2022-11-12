@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 
 uploadRouter.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     /**
      * 画像アップロード
      * @param {*} err
@@ -30,12 +29,12 @@ uploadRouter.post("/", async (req, res) => {
 
     if (file.length) {
       for await (const i of file) {
-        const path = __dirname + "/../" + new Date().getTime() + i.name;
+        const path = __dirname + "/../public/images/" + new Date().getTime() + i.name;
         savePath.push(path); // 配列にpush
         i.mv(path, imageUpload);
       }
     } else {
-      const path = __dirname + "/../" + new Date().getTime() + file.name;
+      const path = __dirname + "/../public/images/" + new Date().getTime() + file.name;
       savePath.push(path); // 配列にpush
       file.mv(path, imageUpload);
     }
