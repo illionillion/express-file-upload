@@ -8,35 +8,38 @@ const __dirname = path.dirname(__filename);
 
 uploadRouter.post("/", async (req, res) => {
   try {
+    
+    console.log(req.body);
+    console.log(req.files);
+    const file = req.files["image-file"];
+    const name = req.body["image-name"];
+    
+    let savePath = [];
+
     /**
      * 画像アップロード
      * @param {*} err
      * @returns
      */
-    const imageUpload = function (err) {
-      if (err) {
-        return;
-      }
+    const imageUpload = function (file) {
 
-      console.log("File upload!!");
+      const path = __dirname + "/../public/images/" + new Date().getTime() + file.name;
+      savePath.push(path); // 配列にpush
+      file.mv(path, err => {
+        if(err) {
+          console.log(err); return;
+        }
+        console.log("File upload!!");
+      });
+
     };
-
-    // console.log(req.params.id);
-    const file = req.files["image-file"];
-    const name = req.body["image-name"];
-
-    let savePath = [];
 
     if (file.length) {
       for await (const i of file) {
-        const path = __dirname + "/../public/images/" + new Date().getTime() + i.name;
-        savePath.push(path); // 配列にpush
-        i.mv(path, imageUpload);
+        imageUpload(i)
       }
     } else {
-      const path = __dirname + "/../public/images/" + new Date().getTime() + file.name;
-      savePath.push(path); // 配列にpush
-      file.mv(path, imageUpload);
+      imageUpload(file)
     }
 
     console.log(savePath); // これをJSON.stringfyで保存
