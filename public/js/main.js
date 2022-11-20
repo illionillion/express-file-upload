@@ -30,6 +30,9 @@ const onSubmit = async e => {
     })
 
     console.log(await post.text());
+    if (post.status === 200) {
+        e.target.reset()
+    }
 }
 
 const init = () => {
